@@ -5,6 +5,8 @@ MANIFEST.SKIP
 README
 lib/Wx/Perl/Throbber.pm
 t/01__load.t
+t/pod_coverage.t
+t/pod.t
 demo/throbber.pl
 demo/main.xrc
 demo/images/eclouds.png

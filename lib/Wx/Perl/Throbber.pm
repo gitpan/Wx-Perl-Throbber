@@ -2,9 +2,9 @@
 ## Name:        Wx::Perl::Throbber
 ## Purpose:     An animated throbber/spinner
 ## Author:      Simon Flack
-## Modified by: $Author: simonflack $ on $Date: 2004/04/27 22:22:05 $
+## Modified by: $Author: simonflack $ on $Date: 2005/03/25 13:38:55 $
 ## Created:     22/03/2004
-## RCS-ID:      $Id: Throbber.pm,v 1.4 2004/04/27 22:22:05 simonflack Exp $
+## RCS-ID:      $Id: Throbber.pm,v 1.5 2005/03/25 13:38:55 simonflack Exp $
 #############################################################################
 
 package Wx::Perl::Throbber;
@@ -16,7 +16,7 @@ use Wx::Event qw/EVT_PAINT EVT_TIMER/;
 use Wx::Perl::Carp;
 use Exporter;
 
-$VERSION   = sprintf'%d.%02d', q$Revision: 1.4 $ =~ /: (\d+)\.(\d+)/;
+$VERSION   = sprintf'%d.%02d', q$Revision: 1.5 $ =~ /: (\d+)\.(\d+)/;
 @ISA       = qw/Exporter Wx::Panel/;
 @EXPORT_OK = qw/EVT_UPDATE_THROBBER/;
 
