@@ -2,9 +2,9 @@
 ## Name:        Wx::Perl::Throbber
 ## Purpose:     An animated throbber/spinner
 ## Author:      Simon Flack
-## Modified by: $Author: simonflack $ on $Date: 2004/04/17 22:30:50 $
+## Modified by: $Author: simonflack $ on $Date: 2004/04/27 22:22:05 $
 ## Created:     22/03/2004
-## RCS-ID:      $Id: Throbber.pm,v 1.2 2004/04/17 22:30:50 simonflack Exp $
+## RCS-ID:      $Id: Throbber.pm,v 1.4 2004/04/27 22:22:05 simonflack Exp $
 #############################################################################
 
 package Wx::Perl::Throbber;
@@ -16,7 +16,7 @@ use Wx::Event qw/EVT_PAINT EVT_TIMER/;
 use Wx::Perl::Carp;
 use Exporter;
 
-$VERSION   = sprintf'%d.%02d', q$Revision: 1.2 $ =~ /: (\d+)\.(\d+)/;
+$VERSION   = sprintf'%d.%02d', q$Revision: 1.4 $ =~ /: (\d+)\.(\d+)/;
 @ISA       = qw/Exporter Wx::Panel/;
 @EXPORT_OK = qw/EVT_UPDATE_THROBBER/;
 
@@ -130,20 +130,20 @@ sub Rotate {
     $self -> {current} += $self -> {direction};
 
     # Have we reached the last frame
-    if ($self -> {current} >= scalar @{$self -> {sequence}} - 1) {
+    if ($self -> {current} == scalar @{$self -> {sequence}}) {
         if ($self -> {autoReverse}) {
             $self -> Reverse();
             $self -> {current} = scalar @{$self -> {sequence}} - 1;
         } else {
-            $self -> {current} = 0;
+            $self -> {current} = 1;
         }
     }
 
     # Have we reached the first frame
-    if ($self -> {current} < 0) {
+    if ($self -> {current} == 0) {
         if ($self -> {autoReverse}) {
             $self -> Reverse();
-            $self -> {current} = 0;
+            $self -> {current} = 1;
         } else {
             $self -> {current} = scalar @{$self -> {sequence}} - 1;
         }
@@ -170,16 +170,16 @@ sub SetBitmap {
 
     if (ref $bitmap eq 'ARRAY') {
         $self -> {submaps} = $bitmap;
-        $self -> {frames} = scalar @$bitmap;
+        $self -> {frames}  = scalar @$bitmap;
     } elsif ($bitmap -> isa ('Wx::Bitmap')) {
-        $self -> {frames} = $frames;
+        $self -> {frames}  = $frames;
         $self -> {submaps} = [];
 
         # Slice the bitmap into 0 + $frames frames
         # Wx::Bitmap->GetSubBitmap is broken in wxMSW 2.4, so we convert to an
 	# image, and convert each SubImage back to a Wx::Bitmap
         my $image = new Wx::Image($bitmap);
-        for (1 .. $frames) {
+        for (0 .. $frames - 1) {
             my $rect = new Wx::Rect(
                                     $_ * $framesWidth,
                                     0,
@@ -224,7 +224,7 @@ sub GetCurrentFrame {
 
 sub GetFrameCount {
     my $self = shift;
-    return $self -> {frames};
+    return $self -> {frames} - 1;
 }
 
 sub Start {
@@ -437,7 +437,7 @@ unencumbered.
 
 =item SetBitmap($bitmap, $frames, $framesWidth)
 
-C<$bitmap> is either the name of a file that will be split into frames (a
+C<$bitmap> is either a single C<Wx::Bitmap> that will be split into frames (a
 composite image) or a list of C<Wx::Bitmap> objects that will be treated as
 individual frames.
 
@@ -468,7 +468,7 @@ Stop the animation
 
 =item Rest()
 
-Stop the animation and return to frame 0
+Stop the animation and return to the I<rest frame> (frame 0)
 
 =item IsRunning()
 
@@ -476,11 +476,12 @@ Returns C<true> if the animation is running
 
 =item GetCurrentFrame()
 
-Returns the frame index that is currently displayed. Starts at 0.
+Returns the frame index that is currently displayed. Starts at 0 (the I<rest 
+frame>)
 
 =item GetFrameCount()
 
-Returns the number of frames in the animation
+Returns the number of frames in the animation (excluding the I<rest frame>)
 
 =item Reverse()
 
